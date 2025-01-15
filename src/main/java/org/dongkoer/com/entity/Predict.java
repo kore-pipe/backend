@@ -6,14 +6,14 @@ import java.util.Date;
 
 public class Predict {
 
-    @JSONField(name = "date", format = "yyyy/MM/dd")
-    private Date date;
+    @JSONField(name = "date", format = "yyyyMM")
+    private String date;
     @JSONField(name = "city")
     private String city;
     @JSONField(name = "province")
     private String province;
 
-    public Predict(String province, Date date, String city) {
+    public Predict(String province, String date, String city) {
         this.province = province;
         this.date = date;
         this.city = city;
@@ -21,11 +21,11 @@ public class Predict {
     public Predict() {
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
