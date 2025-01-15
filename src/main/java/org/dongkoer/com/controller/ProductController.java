@@ -3,7 +3,6 @@ package org.dongkoer.com.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.dongkoer.com.entity.Product;
-import org.dongkoer.com.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,49 +25,49 @@ public class ProductController {
         productMap.put(4, new Product(4, "魔法日记本", "张万森的魔法日记", 14.00));
     }
 
-    @Autowired
-    private IProductService iProductService;
 
-    @GetMapping
-    @Operation(summary = "获取所有产品")
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> list = iProductService.list();
-        return ResponseEntity.ok(list);
-    }
 
-    //    @GetMapping
+//    @GetMapping
 //    @Operation(summary = "获取所有产品")
 //    public ResponseEntity<List<Product>> getAllProducts() {
-//        List<Product> list = new ArrayList<>(productMap.values());
+//        List<Product> list = iProductService.list();
 //        return ResponseEntity.ok(list);
 //    }
-    @GetMapping("/{id}")
-    @Operation(summary = "根据id获取指定商品")
-    public ResponseEntity<Product> getProductById(@PathVariable Integer id) {
-        Product product = iProductService.getBaseMapper().selectById(id);
-        return ResponseEntity.ok(product);
-    }
 
-    //    @GetMapping("/{id}")
+        @GetMapping
+    @Operation(summary = "获取所有产品")
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> list = new ArrayList<>(productMap.values());
+        return ResponseEntity.ok(list);
+    }
+//    @GetMapping("/{id}")
 //    @Operation(summary = "根据id获取指定商品")
-//    public ResponseEntity<Product> getProductById(@PathVariable Integer id){
-//        return ResponseEntity.ok(productMap.get(id));
+//    public ResponseEntity<Product> getProductById(@PathVariable Integer id) {
+//        Product product = iProductService.getBaseMapper().selectById(id);
+//        return ResponseEntity.ok(product);
 //    }
-    @PostMapping
-    @Operation(summary = "添加商品")
-    public ResponseEntity<Product> addProduct(@RequestBody Product product) {
-        int insert = iProductService.getBaseMapper().insert(product);
-        if (insert != 0) {
-            return ResponseEntity.ok(product);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+
+        @GetMapping("/{id}")
+    @Operation(summary = "根据id获取指定商品")
+    public ResponseEntity<Product> getProductById(@PathVariable Integer id){
+        return ResponseEntity.ok(productMap.get(id));
     }
 //    @PostMapping
 //    @Operation(summary = "添加商品")
 //    public ResponseEntity<Product> addProduct(@RequestBody Product product) {
-//        productMap.put(product.getId(), product);
-//        return ResponseEntity.ok(productMap.get(product.getId()));
+//        int insert = iProductService.getBaseMapper().insert(product);
+//        if (insert != 0) {
+//            return ResponseEntity.ok(product);
+//        } else {
+//            return ResponseEntity.badRequest().build();
+//        }
 //    }
+
+    @PostMapping
+    @Operation(summary = "添加商品")
+    public ResponseEntity<Product> addProduct(@RequestBody Product product) {
+        productMap.put(product.getId(), product);
+        return ResponseEntity.ok(productMap.get(product.getId()));
+    }
 
 }

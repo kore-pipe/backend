@@ -1,6 +1,6 @@
 package org.dongkoer.com;
 
-import org.mybatis.spring.annotation.MapperScan;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -13,7 +13,7 @@ import java.net.UnknownHostException;
 
 @SpringBootApplication
 @EnableWebMvc
-@MapperScan("org.dongkoer.com.mapper")
+//@MapperScan("org.dongkoer.com.mapper")
 public class BackendApplication {
 
     public static void main(String[] args) throws UnknownHostException {

@@ -2,10 +2,6 @@ package org.dongkoer.com.entity;
 
 import java.math.BigDecimal;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,23 +21,22 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("product")
 @Schema(title = "产品模型")
 
 public class Product implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableField("id")
+
     private Integer id;
 
-    @TableField("name")
+
     private String name;
 
-    @TableField("description")
+
     private String description;
 
-    @TableField("price")
+
     private Double price;
 
     public Product() {

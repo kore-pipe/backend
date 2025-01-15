@@ -1,17 +1,17 @@
 spring:
   application:
     name: Backend
-  datasource:
-    url: jdbc:mysql://localhost:3306/assignment?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai
-    username: root
-    password: 12345678
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/assignment?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai
+#    username: root
+#    password: 12345678
 server:
   port: 8080
 #by zhengkai.blog.csdn.net
 #mybatis-plus配置控制台打印完整带参数SQL语句
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 springdoc:
   api-docs:
