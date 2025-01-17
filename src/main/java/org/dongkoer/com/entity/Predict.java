@@ -18,6 +18,7 @@ public class Predict {
         this.date = date;
         this.city = city;
     }
+
     public Predict() {
     }
 
