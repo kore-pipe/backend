@@ -1,6 +1,5 @@
 package org.dongkoer.com.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import okhttp3.MediaType;
@@ -25,12 +24,12 @@ import com.alibaba.fastjson2.JSON;
 
 @RestController
 @RequestMapping("/api/predict")
-@Tag(name = "预测模型控制器", description = "restful 接口")
+@Tag(name = "predict AI interfaces", description = "restful interfaces")
 public class PredictController {
     OkHttpClient client = new OkHttpClient();
 
     @PostMapping("/predictByYear")
-    @Operation(summary = "获取某城市预测")
+    @Operation(summary = "select Data using city and province")
     public ResponseEntity<String> getAllByYear(@RequestBody Predict predict) {
         String jsonString = JSON.toJSONString(predict);
 
@@ -59,8 +58,17 @@ public class PredictController {
     }
 
     @PostMapping("/predictByDate")
-    @Operation(summary = "获取所有预测")
+    @Operation(summary = "get all predict data limited by index")
     public ResponseEntity<List<PredictReceiver>> getAllByDate(@RequestBody PredictPage predictPage) {
+        if (predictPage.getFromIndex()==null || predictPage.getToIndex()==null){
+            throw new IllegalArgumentException("index is null");
+        }
+        if (predictPage.getFromIndex()>predictPage.getToIndex()){
+            throw new IllegalArgumentException("index is error");
+        }
+        if (predictPage.getFromIndex()<0 || predictPage.getToIndex()<0){
+            throw new IllegalArgumentException("index is error");
+        }
         Predict predict = new Predict(predictPage.getProvince(), predictPage.getDate(), predictPage.getCity());
         String jsonString = JSON.toJSONString(predict);
 

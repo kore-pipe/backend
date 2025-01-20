@@ -1,7 +1,4 @@
 package org.dongkoer.com.entity;
-
-import java.math.BigDecimal;
-
 import java.io.Serializable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
