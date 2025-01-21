@@ -18,6 +18,7 @@ import java.io.IOException;
 
 
 import java.util.List;
+import java.util.PriorityQueue;
 
 import com.alibaba.fastjson2.JSON;
 
@@ -27,18 +28,49 @@ import com.alibaba.fastjson2.JSON;
 @Tag(name = "predict AI interfaces", description = "restful interfaces")
 public class PredictController {
     OkHttpClient client = new OkHttpClient();
+    private final String url = "http://120.24.227.56:5000";
 
     @PostMapping("/predictByYear")
     @Operation(summary = "select Data using city and province")
     public ResponseEntity<String> getAllByYear(@RequestBody Predict predict) {
         String jsonString = JSON.toJSONString(predict);
 
+//        okhttp3.RequestBody requestJsonBody = okhttp3.RequestBody.create(
+//                jsonString,
+//                MediaType.parse("application/json; charset=utf-8")
+//        );
+//        Request postRequest = new Request.Builder()
+//                .url("http://120.24.227.56:5000")
+//                .post(requestJsonBody)
+//                .build();
+//        try {
+//            Response response = client.newCall(postRequest).execute();
+//            String stringcode = response.body().string();
+////            String s = decodeUnicode(stringcode);
+//            stringcode = decodeUnicode(stringcode);
+//            System.out.println(stringcode);
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
+//            return new ResponseEntity<>(stringcode, headers, HttpStatus.OK);
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+        String stringcode = sendRequestion(jsonString);
+        HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
+            return new ResponseEntity<>(stringcode, headers, HttpStatus.OK);
+
+
+    }
+
+    public String sendRequestion(String jsonString) {
         okhttp3.RequestBody requestJsonBody = okhttp3.RequestBody.create(
                 jsonString,
                 MediaType.parse("application/json; charset=utf-8")
         );
         Request postRequest = new Request.Builder()
-                .url("http://120.24.227.56:5000")
+                .url(url)
                 .post(requestJsonBody)
                 .build();
         try {
@@ -47,59 +79,66 @@ public class PredictController {
 //            String s = decodeUnicode(stringcode);
             stringcode = decodeUnicode(stringcode);
             System.out.println(stringcode);
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
-            return new ResponseEntity<>(stringcode, headers, HttpStatus.OK);
 
-        } catch (IOException e) {
+            return stringcode;
+
+        }catch (IOException e) {
             throw new RuntimeException(e);
         }
+
 
     }
 
     @PostMapping("/predictByDate")
     @Operation(summary = "get all predict data limited by index")
     public ResponseEntity<List<PredictReceiver>> getAllByDate(@RequestBody PredictPage predictPage) {
-        if (predictPage.getFromIndex()==null || predictPage.getToIndex()==null){
+        if (predictPage.getFromIndex() == null || predictPage.getToIndex() == null) {
             throw new IllegalArgumentException("index is null");
         }
-        if (predictPage.getFromIndex()>predictPage.getToIndex()){
+        if (predictPage.getFromIndex() > predictPage.getToIndex()) {
             throw new IllegalArgumentException("index is error");
         }
-        if (predictPage.getFromIndex()<0 || predictPage.getToIndex()<0){
+        if (predictPage.getFromIndex() < 0 || predictPage.getToIndex() < 0) {
             throw new IllegalArgumentException("index is error");
         }
         Predict predict = new Predict(predictPage.getProvince(), predictPage.getDate(), predictPage.getCity());
         String jsonString = JSON.toJSONString(predict);
 
-        okhttp3.RequestBody requestJsonBody = okhttp3.RequestBody.create(
-                jsonString,
-                MediaType.parse("application/json; charset=utf-8")
-        );
-        Request postRequest = new Request.Builder()
-                .url("http://120.24.227.56:5000")
-                .post(requestJsonBody)
-                .build();
-        try {
-            Response response = client.newCall(postRequest).execute();
-            String stringcode = response.body().string();
-
-
-            List<PredictReceiver> predictReceivers = JSON.parseArray(stringcode, PredictReceiver.class);
+//        okhttp3.RequestBody requestJsonBody = okhttp3.RequestBody.create(
+//                jsonString,
+//                MediaType.parse("application/json; charset=utf-8")
+//        );
+//        Request postRequest = new Request.Builder()
+//                .url("http://120.24.227.56:5000")
+//                .post(requestJsonBody)
+//                .build();
+//        try {
+//            Response response = client.newCall(postRequest).execute();
+//            String stringcode = response.body().string();
+//
+//
+//            List<PredictReceiver> predictReceivers = JSON.parseArray(stringcode, PredictReceiver.class);
+//
+//            List<PredictReceiver> predictReceiversByIndex = predictReceivers.subList(predictPage.getFromIndex(), predictPage.getToIndex() + 1);
+//            System.out.println(predictReceiversByIndex);
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
+//
+//            return new ResponseEntity<>(predictReceiversByIndex, headers, HttpStatus.OK);
+//
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+        String stringcode= sendRequestion(jsonString);
+        HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
+        List<PredictReceiver> predictReceivers = JSON.parseArray(stringcode, PredictReceiver.class);
 
             List<PredictReceiver> predictReceiversByIndex = predictReceivers.subList(predictPage.getFromIndex(), predictPage.getToIndex() + 1);
-            System.out.println(predictReceiversByIndex.toString());
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
-
+            System.out.println(predictReceiversByIndex);
             return new ResponseEntity<>(predictReceiversByIndex, headers, HttpStatus.OK);
-
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 
     private String decodeUnicode(String unicodeString) {
