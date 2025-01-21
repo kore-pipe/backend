@@ -30,36 +30,29 @@ public class PredictController {
     OkHttpClient client = new OkHttpClient();
     private final String url = "http://120.24.227.56:5000";
 
+    /*
+    Detailed Explanation
+Receive Predict Object:
+Receives a Predict object sent via an HTTP POST request from the client. This object contains information about the city, date, and province.
+Convert to JSON String:
+Uses JSON.toJSONString(predict) to convert the Predict object into a JSON-formatted string.
+Send HTTP Request:
+Calls the sendRequestion(jsonString) method to send a POST request to the specified URL and retrieve the server's response.
+Get Response Result:
+Inside the sendRequestion method, the HTTP request is processed, and the server's response content is returned as a string.
+Set Response Headers:
+Creates an HttpHeaders object and sets the content type of the response to application/json;charset=UTF-8.
+Return Response:
+Packages the processed response result into a ResponseEntity object and returns it to the client.
+     */
     @PostMapping("/predictByYear")
     @Operation(summary = "select Data using city and province")
     public ResponseEntity<String> getAllByYear(@RequestBody Predict predict) {
         String jsonString = JSON.toJSONString(predict);
-
-//        okhttp3.RequestBody requestJsonBody = okhttp3.RequestBody.create(
-//                jsonString,
-//                MediaType.parse("application/json; charset=utf-8")
-//        );
-//        Request postRequest = new Request.Builder()
-//                .url("http://120.24.227.56:5000")
-//                .post(requestJsonBody)
-//                .build();
-//        try {
-//            Response response = client.newCall(postRequest).execute();
-//            String stringcode = response.body().string();
-////            String s = decodeUnicode(stringcode);
-//            stringcode = decodeUnicode(stringcode);
-//            System.out.println(stringcode);
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
-//            return new ResponseEntity<>(stringcode, headers, HttpStatus.OK);
-//
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
         String stringcode = sendRequestion(jsonString);
         HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
-            return new ResponseEntity<>(stringcode, headers, HttpStatus.OK);
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
+        return new ResponseEntity<>(stringcode, headers, HttpStatus.OK);
 
 
     }
@@ -82,13 +75,22 @@ public class PredictController {
 
             return stringcode;
 
-        }catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
 
     }
 
+    /*
+    Explanation of Code Functionality
+This code implements the functionality to retrieve prediction data based on a date range. The steps are as follows:
+Parameter Validation: Checks if the indices in the PredictPage object are valid, including whether they are null, negative, or if the start index is greater than the end index.
+Request Construction: Creates a Predict object using the attributes from PredictPage and converts it into a JSON string.
+Send Request: Calls the sendRequestion method to send an HTTP request, retrieves the response data, and decodes it.
+Process Response: Parses the response data into a list of PredictReceiver objects and extracts a sublist based on the provided indices.
+Return Result: Wraps the processed data into a ResponseEntity and returns it.
+     */
     @PostMapping("/predictByDate")
     @Operation(summary = "get all predict data limited by index")
     public ResponseEntity<List<PredictReceiver>> getAllByDate(@RequestBody PredictPage predictPage) {
@@ -103,42 +105,14 @@ public class PredictController {
         }
         Predict predict = new Predict(predictPage.getProvince(), predictPage.getDate(), predictPage.getCity());
         String jsonString = JSON.toJSONString(predict);
-
-//        okhttp3.RequestBody requestJsonBody = okhttp3.RequestBody.create(
-//                jsonString,
-//                MediaType.parse("application/json; charset=utf-8")
-//        );
-//        Request postRequest = new Request.Builder()
-//                .url("http://120.24.227.56:5000")
-//                .post(requestJsonBody)
-//                .build();
-//        try {
-//            Response response = client.newCall(postRequest).execute();
-//            String stringcode = response.body().string();
-//
-//
-//            List<PredictReceiver> predictReceivers = JSON.parseArray(stringcode, PredictReceiver.class);
-//
-//            List<PredictReceiver> predictReceiversByIndex = predictReceivers.subList(predictPage.getFromIndex(), predictPage.getToIndex() + 1);
-//            System.out.println(predictReceiversByIndex);
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
-//
-//            return new ResponseEntity<>(predictReceiversByIndex, headers, HttpStatus.OK);
-//
-//
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-        String stringcode= sendRequestion(jsonString);
+        String stringcode = sendRequestion(jsonString);
         HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8);
         List<PredictReceiver> predictReceivers = JSON.parseArray(stringcode, PredictReceiver.class);
 
-            List<PredictReceiver> predictReceiversByIndex = predictReceivers.subList(predictPage.getFromIndex(), predictPage.getToIndex() + 1);
-            System.out.println(predictReceiversByIndex);
-            return new ResponseEntity<>(predictReceiversByIndex, headers, HttpStatus.OK);
+        List<PredictReceiver> predictReceiversByIndex = predictReceivers.subList(predictPage.getFromIndex(), predictPage.getToIndex() + 1);
+        System.out.println(predictReceiversByIndex);
+        return new ResponseEntity<>(predictReceiversByIndex, headers, HttpStatus.OK);
     }
 
     private String decodeUnicode(String unicodeString) {
