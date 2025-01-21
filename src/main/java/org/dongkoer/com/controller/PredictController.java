@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.concurrent.TimeUnit;
 
 import com.alibaba.fastjson2.JSON;
 
@@ -27,7 +28,12 @@ import com.alibaba.fastjson2.JSON;
 @RequestMapping("/api/predict")
 @Tag(name = "predict AI interfaces", description = "restful interfaces")
 public class PredictController {
-    OkHttpClient client = new OkHttpClient();
+    //OkHttpClient client = new OkHttpClient();
+    OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS) // 设置连接超时时间为 10 秒
+            .readTimeout(30, TimeUnit.SECONDS)    // 设置读取超时时间为 30 秒
+            .writeTimeout(15, TimeUnit.SECONDS)   // 设置写入超时时间为 15 秒
+            .build();
     private final String url = "http://120.24.227.56:5000";
 
     /*
